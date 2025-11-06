@@ -1,0 +1,154 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="using:DiskInfoViewer.ViewModels"
+			 xmlns:ctrl="using:BlackSharp.UI.Avalonia.Controls"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="DiskInfoViewer.Views.StorageView"
+			 x:DataType="vm:StorageViewModel">
+	<UserControl.Styles>
+		<Style Selector="TextBlock">
+			<Setter Property="VerticalAlignment" Value="Center"/>
+		</Style>
+	</UserControl.Styles>
+
+	<ctrl:GridEx>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="1*"/>
+			<RowDefinition Height="2*"/>
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition/>
+			<ColumnDefinition/>
+		</Grid.ColumnDefinitions>
+
+		<StackPanel Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center">
+			<TextBlock Text="{Binding Storage.Model}"/>
+		</StackPanel>
+
+		<StackPanel Grid.Row="1" Grid.Column="0">
+			<TextBlock Text="Health"
+					   IsVisible="{Binding Storage.Smart.Life, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+			<TextBlock Text="{Binding Storage.Smart.Life, StringFormat='{}{0}%'}"
+					   IsVisible="{Binding Storage.Smart.Life, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+			<TextBlock Text="Temperature"/>
+			<TextBlock Text="{Binding Storage.Smart.Temperature, StringFormat='{}{0}°C'}"/>
+		</StackPanel>
+
+		<StackPanel Grid.Row="1" Grid.Column="1">
+			<ctrl:GridEx>
+				<Grid.Styles>
+					<Style Selector="TextBlock">
+						<Setter Property="HorizontalAlignment" Value="Right"/>
+					</Style>
+				</Grid.Styles>
+				<Grid.RowDefinitions>
+					<RowDefinition/>
+					<RowDefinition/>
+					<RowDefinition/>
+					<RowDefinition/>
+					<RowDefinition/>
+				</Grid.RowDefinitions>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition/>
+					<ColumnDefinition/>
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition/>
+					<ColumnDefinition/>
+				</Grid.ColumnDefinitions>
+
+				<TextBlock Grid.Row="0" Grid.Column="0" Text="Vendor"
+						   IsVisible="{Binding Storage.Vendor, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+				<TextBox Grid.Row="0" Grid.Column="1" IsReadOnly="True" Text="{Binding Storage.Vendor}"
+						 IsVisible="{Binding Storage.Vendor, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+
+				<TextBlock Grid.Row="1" Grid.Column="0" Text="Firmware"/>
+				<TextBox Grid.Row="1" Grid.Column="1" IsReadOnly="True" Text="{Binding Storage.Firmware}"/>
+
+				<TextBlock Grid.Row="2" Grid.Column="0" Text="Serial number"/>
+				<TextBox Grid.Row="2" Grid.Column="1" IsReadOnly="True" Text="{Binding Storage.SerialNumber}"
+						 IsVisible="{Binding Storage.ShowSerialNumber}"/>
+
+				<CheckBox Grid.Row="2" Grid.Column="2" IsChecked="{Binding Storage.ShowSerialNumber}"
+						  ToolTip.Tip="Show serial number"/>
+
+				<TextBlock Grid.Row="3" Grid.Column="0" Text="Total size in bytes"/>
+				<TextBox Grid.Row="3" Grid.Column="1" IsReadOnly="True" Text="{Binding Storage.TotalSize, Mode=OneWay, StringFormat='{}{0:N0}'}"/>
+
+				<TextBlock Grid.Row="4" Grid.Column="0" Text="Storage bus type"/>
+				<TextBox Grid.Row="4" Grid.Column="1" IsReadOnly="True" Text="{Binding Storage.BusType}"/>
+
+				<TextBlock Grid.Row="0" Grid.Column="3" Text="VendorID"
+						   IsVisible="{Binding Storage.VendorID, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+				<TextBox Grid.Row="0" Grid.Column="4" IsReadOnly="True" Text="{Binding Storage.VendorID}"
+						 IsVisible="{Binding Storage.VendorID, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+
+				<TextBlock Grid.Row="1" Grid.Column="3" Text="Total reads"
+						   IsVisible="{Binding Storage.Smart.HostReads, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+				<TextBox Grid.Row="1" Grid.Column="4" IsReadOnly="True" Text="{Binding Storage.Smart.HostReads}"
+						 IsVisible="{Binding Storage.Smart.HostReads, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+
+				<TextBlock Grid.Row="2" Grid.Column="3" Text="Total writes"
+						   IsVisible="{Binding Storage.Smart.HostWrites, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+				<TextBox Grid.Row="2" Grid.Column="4" IsReadOnly="True" Text="{Binding Storage.Smart.HostWrites}"
+						 IsVisible="{Binding Storage.Smart.HostWrites, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+
+				<TextBlock Grid.Row="3" Grid.Column="3" Text="Power on count"/>
+				<TextBox Grid.Row="3" Grid.Column="4" IsReadOnly="True" Text="{Binding Storage.Smart.PowerOnCount}"/>
+
+				<TextBlock Grid.Row="4" Grid.Column="3" Text="Power on hours"/>
+				<TextBox Grid.Row="4" Grid.Column="4" IsReadOnly="True" Text="{Binding Storage.Smart.MeasuredPowerOnHours}"/>
+			</ctrl:GridEx>
+		</StackPanel>
+
+		<ctrl:GridEx Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition/>
+			</Grid.RowDefinitions>
+
+			<TextBlock Grid.Row="0" Text="Partitions:"/>
+			<DataGrid Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True"
+					  CanUserResizeColumns="True"
+					  ItemsSource="{Binding Storage.Partitions}">
+				<DataGrid.Columns>
+					<DataGridTextColumn Header="ID" Binding="{Binding PartitionNumber}"/>
+					<DataGridTextColumn Header="Drive letter" Binding="{Binding DriveLetter}"/>
+					<DataGridTextColumn Header="Starting offset" Binding="{Binding StartingOffset, Mode=OneWay, StringFormat='{}{0:N0}'}"/>
+					<DataGridTextColumn Header="Partition length" Binding="{Binding PartitionLength, Mode=OneWay, StringFormat='{}{0:N0}'}"/>
+					<DataGridTextColumn Header="Available free space" Binding="{Binding AvailableFreeSpace, Mode=OneWay, StringFormat='{}{0:N0}'}"/>
+				</DataGrid.Columns>
+			</DataGrid>
+		</ctrl:GridEx>
+
+		<ctrl:GridEx Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition/>
+			</Grid.RowDefinitions>
+
+			<TextBlock Grid.Row="0" Text="Attributes:"/>
+			<DataGrid Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True"
+					  CanUserResizeColumns="True"
+					  ItemsSource="{Binding Storage.Smart.SmartAttributes}">
+				<DataGrid.Columns>
+					<DataGridTextColumn Header="ID" Binding="{Binding ID}"/>
+					<DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
+					<DataGridTemplateColumn Header="Value">
+						<DataGridTemplateColumn.CellTemplate>
+							<DataTemplate>
+								<TextBlock Text="{Binding Value}" HorizontalAlignment="Right"/>
+							</DataTemplate>
+						</DataGridTemplateColumn.CellTemplate>
+					</DataGridTemplateColumn>
+					<DataGridTextColumn Header="Value (Hex)" Binding="{Binding Value, StringFormat='{}0x{0:X16}'}"/>
+				</DataGrid.Columns>
+			</DataGrid>
+		</ctrl:GridEx>
+
+	</ctrl:GridEx>
+
+</UserControl>
