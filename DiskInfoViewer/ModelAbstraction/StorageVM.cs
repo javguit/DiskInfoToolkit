@@ -37,6 +37,9 @@ namespace DiskInfoViewer.ModelAbstraction
             SerialNumber      = Storage.SerialNumber     ;
 
             Smart = new(storage.Smart);
+
+            IsDynamicDisk = Storage.IsDynamicDisk;
+            TotalFreeSize = Storage.TotalFreeSize;
         }
 
         #endregion
@@ -69,6 +72,12 @@ namespace DiskInfoViewer.ModelAbstraction
 
         [ObservableProperty]
         SmartInfoVM _smart;
+
+        [ObservableProperty]
+        bool _isDynamicDisk;
+
+        [ObservableProperty]
+        ulong _totalFreeSize;
 
         [ObservableProperty]
         ObservableCollection<PartitionVM> _partitions = new();
@@ -125,6 +134,9 @@ namespace DiskInfoViewer.ModelAbstraction
             {
                 Partitions.Remove(remove);
             }
+
+            IsDynamicDisk = Storage.IsDynamicDisk;
+            TotalFreeSize = Storage.TotalFreeSize;
         }
 
         #endregion
