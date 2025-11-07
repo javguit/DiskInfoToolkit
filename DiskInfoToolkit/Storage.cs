@@ -236,9 +236,15 @@ namespace DiskInfoToolkit
         #region Volatile
 
         /// <summary>
+        /// Identifies if this device is a dynamic disk (Windows).
+        /// </summary>
+        public bool IsDynamicDisk => Partitions.Any(p => p.IsDynamicDiskPartition);
+
+        /// <summary>
         /// Gets the total free size of storage space on a drive, in bytes.
         /// </summary>
-        /// <remarks>Calculation (all <see cref="Partitions"/>): <see cref="TotalSize"/> - <see cref="Partition.PartitionLength"/> + <see cref="Partition.AvailableFreeSpace"/>.</remarks>
+        /// <remarks>Calculation (all <see cref="Partitions"/>): <see cref="TotalSize"/> - <see cref="Partition.PartitionLength"/> + <see cref="Partition.AvailableFreeSpace"/>.<br/>
+        /// This will not return reliable data if this device is a dynamic disk (check <see cref="IsDynamicDisk"/>).</remarks>
         public ulong TotalFreeSize => GetTotalFreeSize();
 
         /// <summary>
@@ -249,6 +255,7 @@ namespace DiskInfoToolkit
         /// <summary>
         /// List of all partitions on drive.
         /// </summary>
+        /// <remarks>Partitions do not reflect partitions on a dynamic disk (Windows) - check <see cref="IsDynamicDisk"/>.</remarks>
         public List<Partition> Partitions { get; private set; } = new();
 
         #endregion

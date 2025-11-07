@@ -88,25 +88,33 @@ namespace ConsoleOutputTest
             lock (_LogDataLock)
             {
                 Log($"Storage '{storage.Model}':");
-                Log($"  -> {nameof(storage.Partitions)}:");
 
-                foreach (var partition in storage.Partitions)
+                if (!storage.IsDynamicDisk)
                 {
-                    Log($"    + {nameof(Partition)} #{partition.PartitionNumber}:");
+                    Log($"  -> {nameof(storage.Partitions)}:");
 
-                    if (partition.DriveLetter != null)
+                    foreach (var partition in storage.Partitions)
                     {
-                        Log($"      # {nameof(partition.DriveLetter       ),Padding} = {partition.DriveLetter       }");
-                    }
+                        Log($"    + {nameof(Partition)} #{partition.PartitionNumber}:");
 
-                    if (partition.AvailableFreeSpace != null)
-                    {
-                        Log($"      # {nameof(partition.AvailableFreeSpace),Padding} = {partition.AvailableFreeSpace}");
-                    }
+                        if (partition.DriveLetter != null)
+                        {
+                            Log($"      # {nameof(partition.DriveLetter       ),Padding} = {partition.DriveLetter       }");
+                        }
 
-                    Log($"      # {nameof(partition.PartitionStyle ),Padding} = {partition.PartitionStyle }");
-                    Log($"      # {nameof(partition.StartingOffset ),Padding} = {partition.StartingOffset }");
-                    Log($"      # {nameof(partition.PartitionLength),Padding} = {partition.PartitionLength}");
+                        if (partition.AvailableFreeSpace != null)
+                        {
+                            Log($"      # {nameof(partition.AvailableFreeSpace),Padding} = {partition.AvailableFreeSpace}");
+                        }
+
+                        Log($"      # {nameof(partition.PartitionStyle ),Padding} = {partition.PartitionStyle }");
+                        Log($"      # {nameof(partition.StartingOffset ),Padding} = {partition.StartingOffset }");
+                        Log($"      # {nameof(partition.PartitionLength),Padding} = {partition.PartitionLength}");
+                    }
+                }
+                else
+                {
+                    Log($"  -> {nameof(storage.Partitions)} not being logged due to {nameof(storage.IsDynamicDisk)}");
                 }
 
                 Log();
@@ -144,7 +152,7 @@ namespace ConsoleOutputTest
                 Log($"  -> {nameof(storage.Model                      ),Padding} = {storage.Model                      }");
                 Log($"  -> {nameof(storage.PhysicalPath               ),Padding} = {storage.PhysicalPath               }");
 
-                if (storage.ProductID.HasValue)
+                if (storage.ProductID != null)
                 {
                     Log($"  -> {nameof(storage.ProductID                  ),Padding} = {storage.ProductID                  }");
                 }
@@ -152,9 +160,21 @@ namespace ConsoleOutputTest
                 Log($"  -> {nameof(storage.SerialNumber               ),Padding} = {storage.SerialNumber               }");
                 Log($"  -> {nameof(storage.StorageController          ),Padding} = {storage.StorageController          }");
                 Log($"  -> {nameof(storage.StorageControllerType      ),Padding} = {storage.StorageControllerType      }");
+
+                Log($"  -> {nameof(storage.IsDynamicDisk              ),Padding} = {storage.IsDynamicDisk              }");
+
+                if (!storage.IsDynamicDisk)
+                {
+                    var totalFreeSize = storage.TotalFreeSize;
+
+                    var percentFree = totalFreeSize == 0 ? 0 : 100M * totalFreeSize / storage.TotalSize;
+
+                    Log($"  -> {nameof(totalFreeSize                      ),Padding} = {totalFreeSize                      } ({percentFree:F2}%)");
+                }
+
                 Log($"  -> {nameof(storage.TotalSize                  ),Padding} = {storage.TotalSize                  }");
 
-                if (storage.VendorID.HasValue)
+                if (storage.VendorID != null)
                 {
                     Log($"  -> {nameof(storage.VendorID                   ),Padding} = {storage.VendorID                   } ({storage.VendorID:X4})");
                 }
@@ -165,41 +185,55 @@ namespace ConsoleOutputTest
                 {
                     Log($"  -> {nameof(storage.Smart)}:");
 
+                    Log($"    + {nameof(storage.Smart.DiskStatus          ),Padding} = {storage.Smart.DiskStatus          }");
+
                     if (storage.Smart.Temperature != null)
                     {
-                        Log($"    + {nameof(storage.Smart.Temperature         ),Padding} = {storage.Smart.Temperature}°C");
+                        Log($"    + {nameof(storage.Smart.Temperature         ),Padding} = {storage.Smart.Temperature         }°C");
                     }
 
                     if (storage.Smart.TemperatureWarning != null)
                     {
-                        Log($"    + {nameof(storage.Smart.TemperatureWarning  ),Padding} = {storage.Smart.TemperatureWarning}°C");
+                        Log($"    + {nameof(storage.Smart.TemperatureWarning  ),Padding} = {storage.Smart.TemperatureWarning  }°C");
                     }
 
                     if (storage.Smart.TemperatureCritical != null)
                     {
-                        Log($"    + {nameof(storage.Smart.TemperatureCritical ),Padding} = {storage.Smart.TemperatureCritical}°C");
+                        Log($"    + {nameof(storage.Smart.TemperatureCritical ),Padding} = {storage.Smart.TemperatureCritical }°C");
                     }
 
-                    Log($"    + {nameof(storage.Smart.Life                ),Padding} = {storage.Smart.Life}%");
-                    Log($"    + {nameof(storage.Smart.HostReads           ),Padding} = {storage.Smart.HostReads           }");
-                    Log($"    + {nameof(storage.Smart.HostWrites          ),Padding} = {storage.Smart.HostWrites          }");
+                    if (storage.Smart.Life != null)
+                    {
+                        Log($"    + {nameof(storage.Smart.Life                ),Padding} = {storage.Smart.Life                }%");
+                    }
+
+                    if (storage.Smart.HostReads != null)
+                    {
+                        Log($"    + {nameof(storage.Smart.HostReads           ),Padding} = {storage.Smart.HostReads           }");
+                    }
+
+                    if (storage.Smart.HostWrites != null)
+                    {
+                        Log($"    + {nameof(storage.Smart.HostWrites          ),Padding} = {storage.Smart.HostWrites          }");
+                    }
+
                     Log($"    + {nameof(storage.Smart.PowerOnCount        ),Padding} = {storage.Smart.PowerOnCount        }");
                     Log($"    + {nameof(storage.Smart.MeasuredPowerOnHours),Padding} = {storage.Smart.MeasuredPowerOnHours}h");
                     Log($"    + {nameof(storage.Smart.DetectedPowerOnHours),Padding} = {storage.Smart.DetectedPowerOnHours}h");
 
-                    if (storage.Smart.NandWrites.HasValue)
+                    if (storage.Smart.NandWrites != null)
                     {
-                        Log($"    + {nameof(storage.Smart.NandWrites          ),Padding} = {storage.Smart.NandWrites       }");
+                        Log($"    + {nameof(storage.Smart.NandWrites          ),Padding} = {storage.Smart.NandWrites          }");
                     }
 
-                    if (storage.Smart.GBytesErased.HasValue)
+                    if (storage.Smart.GBytesErased != null)
                     {
-                        Log($"    + {nameof(storage.Smart.GBytesErased        ),Padding} = {storage.Smart.GBytesErased     }");
+                        Log($"    + {nameof(storage.Smart.GBytesErased        ),Padding} = {storage.Smart.GBytesErased        }");
                     }
 
-                    if (storage.Smart.WearLevelingCount.HasValue)
+                    if (storage.Smart.WearLevelingCount != null)
                     {
-                        Log($"    + {nameof(storage.Smart.WearLevelingCount   ),Padding} = {storage.Smart.WearLevelingCount}");
+                        Log($"    + {nameof(storage.Smart.WearLevelingCount   ),Padding} = {storage.Smart.WearLevelingCount   }");
                     }
 
                     Log();

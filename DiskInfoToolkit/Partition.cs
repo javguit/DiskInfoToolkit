@@ -15,7 +15,6 @@ using DiskInfoToolkit.Interop;
 using DiskInfoToolkit.Interop.Structures;
 using DiskInfoToolkit.Structures.Interop;
 using System.Runtime.InteropServices;
-using System.Text;
 
 namespace DiskInfoToolkit
 {
@@ -26,7 +25,12 @@ namespace DiskInfoToolkit
     {
         #region Fields
 
+        const int PARTITION_LDM = 0x42;
+
         static Guid GUID_DEVINTERFACE_VOLUME = new Guid("53f5630d-b6bf-11d0-94f2-00a0c91efb8b");
+
+        static readonly Guid PARTITION_LDM_METADATA_GUID = new Guid("5808c8aa-7e8f-42e0-85d2-e1e90434cfb3");
+        static readonly Guid PARTITION_LDM_DATA_GUID = new Guid("af9b60a0-1431-4f62-bc68-3311714a69ad");
 
         #endregion
 
@@ -45,7 +49,7 @@ namespace DiskInfoToolkit
         /// <summary>
         /// Starting offset of this partition.
         /// </summary>
-        public long StartingOffset  { get; internal set; }
+        public long StartingOffset { get; internal set; }
 
         /// <summary>
         /// Length of this partition.
@@ -68,6 +72,14 @@ namespace DiskInfoToolkit
         /// </summary>
         public ulong? AvailableFreeSpace { get; internal set; }
 
+        /// <summary>
+        /// Identifies if this partition is on a dynamic disk (Windows).
+        /// </summary>
+        public bool IsDynamicDiskPartition { get; internal set; }
+
+        /// <summary>
+        /// Volume path which is being used for <see cref="Kernel32.GetDiskFreeSpaceEx"/>.
+        /// </summary>
         internal string VolumePath { get; set; }
 
         #endregion
@@ -139,6 +151,18 @@ namespace DiskInfoToolkit
                     PartitionLength      = partitionInformation.PartitionLength,
                     PartitionNumber      = partitionInformation.PartitionNumber,
                 };
+
+                switch (partition.PartitionStyle)
+                {
+                    case PartitionStyle.PartitionStyleMBR:
+                        partition.IsDynamicDiskPartition = partitionInformation.Layout.Mbr.PartitionType == PARTITION_LDM;
+                        break;
+                    case PartitionStyle.PartitionStyleGPT:
+                        partition.IsDynamicDiskPartition =
+                            partitionInformation.Layout.Gpt.PartitionType == PARTITION_LDM_METADATA_GUID
+                         || partitionInformation.Layout.Gpt.PartitionType == PARTITION_LDM_DATA_GUID;
+                        break;
+                }
 
                 partitions.Add(partition);
             }
