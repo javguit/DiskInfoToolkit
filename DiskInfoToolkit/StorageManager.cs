@@ -61,6 +61,8 @@ namespace DiskInfoToolkit
 
         static object _StorageLock = new();
 
+        const int DevicesChangedDelayMS = 25;
+
         #endregion
 
         #region Properties
@@ -276,7 +278,7 @@ namespace DiskInfoToolkit
                 }
                 else
                 {
-                    Task.Delay(5);
+                    Thread.Sleep(DevicesChangedDelayMS);
                 }
             }
         }
