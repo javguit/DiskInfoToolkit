@@ -9,9 +9,9 @@ A toolkit for Storage Device informations. Primarily used for reading [S.M.A.R.T
 ## Project overview
 | Project | .NET Version[s] |
 | --- | --- |
-| **[DiskInfoToolkit](https://github.com/Blacktempel/DiskInfoToolkit/tree/master/DiskInfoToolkit)** <br/> This library reads detailed information from various types of storage devices - including NVMe, SSD, HDD and USB drives. <br/> It provides a high level API to read device data, [SMART attributes](https://en.wikipedia.org/wiki/Self-Monitoring,_Analysis_and_Reporting_Technology), Partitions and other hardware details directly from the system. | .NET Framework 4.7.2 & 4.8.1 <br/> .NET 8 & .NET 9 |
+| **[DiskInfoToolkit](https://github.com/Blacktempel/DiskInfoToolkit/tree/master/DiskInfoToolkit)** <br/> This library reads detailed information from various types of storage devices - including NVMe, SSD, HDD and USB drives. <br/> It provides a high level API to read device data, [SMART attributes](https://en.wikipedia.org/wiki/Self-Monitoring,_Analysis_and_Reporting_Technology), Partitions and other hardware details directly from the system. | .NET Framework 4.7.2 & 4.8.1 <br/> .NET 8, 9 and 10 |
 | **[ConsoleOutputTest](https://github.com/Blacktempel/DiskInfoToolkit/tree/master/ConsoleOutputTest)** <br/> Example Application to show how some library functionality can be used. | .NET 8 |
-| **[DiskInfoViewer](https://github.com/Blacktempel/DiskInfoToolkit/tree/master/DiskInfoViewer)** <br/> Visualization of detected storage devices on your system. <br/> This supports adding / removing storage devices and updates data. <br/> UI is built using [Avalonia UI.](https://avaloniaui.net/) | .NET 8 & .NET 9 |
+| **[DiskInfoViewer](https://github.com/Blacktempel/DiskInfoToolkit/tree/master/DiskInfoViewer)** <br/> Visualization of detected storage devices on your system. <br/> This supports adding / removing storage devices and updates data. <br/> UI is built using [Avalonia UI.](https://avaloniaui.net/) | .NET 8 |
 
 ## What platforms are supported ?
 For the moment we only support Windows.<br/>

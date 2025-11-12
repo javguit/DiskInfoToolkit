@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net8.0;net9.0;net481;net472</TargetFrameworks>
+    <TargetFrameworks>net472;net481;net8.0;net9.0;net10.0</TargetFrameworks>
 	<LangVersion>latest</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
@@ -14,19 +14,19 @@
     <RepositoryUrl>https://github.com/Blacktempel/DiskInfoToolkit</RepositoryUrl>
     <PackageTags>disk; device; nvme; ssd; hdd; toolkit; thermal; sensor; thermal sensor; smart; s.m.a.r.t.; data; monitoring; system; disk info</PackageTags>
     <PackageLicenseExpression>MPL-2.0</PackageLicenseExpression>
-    <AssemblyVersion>1.0.2</AssemblyVersion>
-    <FileVersion>1.0.2</FileVersion>
+    <AssemblyVersion>1.0.3</AssemblyVersion>
+    <FileVersion>1.0.3</FileVersion>
     <Version>$(AssemblyVersion)</Version>
     <PackageIcon>packageicon.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Configurations>Debug;Release</Configurations>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net472|AnyCPU'">
     <NoWarn>1701;1702;1591;9191</NoWarn>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net472|AnyCPU'">
     <NoWarn>1701;1702;1591;9191</NoWarn>
   </PropertyGroup>
 
@@ -34,7 +34,11 @@
     <NoWarn>1701;1702;1591;9191</NoWarn>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net472|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net481|AnyCPU'">
+    <NoWarn>1701;1702;1591;9191</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0|AnyCPU'">
     <NoWarn>1701;1702;1591;9191</NoWarn>
   </PropertyGroup>
 
@@ -42,15 +46,19 @@
     <NoWarn>1701;1702;1591;9191</NoWarn>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0|AnyCPU'">
+    <NoWarn>1701;1702;1591;9191</NoWarn>
+  </PropertyGroup>
+
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0|AnyCPU'">
     <NoWarn>1701;1702;1591;9191</NoWarn>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net481|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0|AnyCPU'">
     <NoWarn>1701;1702;1591;9191</NoWarn>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net472|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0|AnyCPU'">
     <NoWarn>1701;1702;1591;9191</NoWarn>
   </PropertyGroup>
 	
@@ -71,7 +79,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="BlackSharp.Core" Version="1.0.2" />
+    <PackageReference Include="BlackSharp.Core" Version="1.0.3" />
     <PackageReference Include="System.Memory" Version="4.6.3" />
   </ItemGroup>
 
