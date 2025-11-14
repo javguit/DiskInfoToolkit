@@ -82,9 +82,9 @@
 				<TextBox Grid.Row="3" Grid.Column="1" IsReadOnly="True" Text="{Binding Storage.BusType}"/>
 
 				<TextBlock Grid.Row="4" Grid.Column="0" Text="Total free size in bytes"
-						   IsVisible="{Binding !Storage.IsDynamicDisk}"/>
+						   IsVisible="{Binding Storage.TotalFreeSize, Converter={x:Static ObjectConverters.IsNotNull}}"/>
 				<TextBox Grid.Row="4" Grid.Column="1" IsReadOnly="True" Text="{Binding Storage.TotalFreeSize, Mode=OneWay, StringFormat='{}{0:N0}'}"
-						 IsVisible="{Binding !Storage.IsDynamicDisk}"/>
+						 IsVisible="{Binding Storage.TotalFreeSize, Converter={x:Static ObjectConverters.IsNotNull}}"/>
 
 				<TextBlock Grid.Row="5" Grid.Column="0" Text="Total size in bytes"/>
 				<TextBox Grid.Row="5" Grid.Column="1" IsReadOnly="True" Text="{Binding Storage.TotalSize, Mode=OneWay, StringFormat='{}{0:N0}'}"/>

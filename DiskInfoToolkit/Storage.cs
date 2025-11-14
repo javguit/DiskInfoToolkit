@@ -249,8 +249,9 @@ namespace DiskInfoToolkit
         /// Gets the total free size of storage space on a drive, in bytes.
         /// </summary>
         /// <remarks>Calculation (all <see cref="Partitions"/>): <see cref="TotalSize"/> - <see cref="Partition.PartitionLength"/> + <see cref="Partition.AvailableFreeSpace"/>.<br/>
-        /// This will not return reliable data if this device is a dynamic disk (check <see cref="IsDynamicDisk"/>).</remarks>
-        public ulong TotalFreeSize => GetTotalFreeSize();
+        /// This may return null if free size is not supported for this disk.<br/>
+        /// Data may not be fully reliable if this disk contains another operating system partition (check <see cref="Partition.IsOtherOperatingSystemPartition"/>).</remarks>
+        public ulong? TotalFreeSize => GetTotalFreeSize();
 
         /// <summary>
         /// Smart information of drive.
@@ -336,10 +337,22 @@ namespace DiskInfoToolkit
             Partitions.AddRange(partitions);
         }
 
-        ulong GetTotalFreeSize()
+        ulong? GetTotalFreeSize()
         {
+            //No support for dynamic disks
+            if (IsDynamicDisk)
+            {
+                return null;
+            }
+
             //Sum of free space on partitions
             var partitionsFree = Partitions.Sum(p => (long?)p.AvailableFreeSpace);
+
+            //All recognized partitions do not have free space information
+            if (partitionsFree == null)
+            {
+                return null;
+            }
 
             //Sum of partition sizes
             var partitionSizes = Partitions.Sum(p => p.PartitionLength);

@@ -77,7 +77,7 @@ namespace DiskInfoViewer.ModelAbstraction
         bool _isDynamicDisk;
 
         [ObservableProperty]
-        ulong _totalFreeSize;
+        ulong? _totalFreeSize;
 
         [ObservableProperty]
         ObservableCollection<PartitionVM> _partitions = new();
@@ -136,7 +136,7 @@ namespace DiskInfoViewer.ModelAbstraction
             }
 
             IsDynamicDisk = Storage.IsDynamicDisk;
-            TotalFreeSize = Storage.TotalFreeSize;
+            TotalFreeSize = Storage.Partitions.Any(p => p.IsOtherOperatingSystemPartition) ? null : Storage.TotalFreeSize;
         }
 
         #endregion

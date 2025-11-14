@@ -46,7 +46,7 @@ namespace DiskInfoViewer.ViewModels
 
         void UpdateStorage()
         {
-            const int UpdateTimeInMilliseconds = 5000;
+            const int UpdateTimeInMilliseconds = 2500;
 
             while (true)
             {

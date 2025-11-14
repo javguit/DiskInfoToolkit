@@ -11,6 +11,7 @@
 
 using BlackSharp.Core.Logging;
 using DiskInfoToolkit;
+using DiskInfoToolkit.Enums.Interop;
 using DiskInfoToolkit.Events;
 
 namespace ConsoleOutputTest
@@ -83,7 +84,7 @@ namespace ConsoleOutputTest
         static object _LogDataLock = new object();
         static void LogData(Storage storage)
         {
-            const int Padding = -30;
+            const int Padding = -35;
 
             lock (_LogDataLock)
             {
@@ -107,9 +108,24 @@ namespace ConsoleOutputTest
                             Log($"      # {nameof(partition.AvailableFreeSpace),Padding} = {partition.AvailableFreeSpace}");
                         }
 
-                        Log($"      # {nameof(partition.PartitionStyle ),Padding} = {partition.PartitionStyle }");
-                        Log($"      # {nameof(partition.StartingOffset ),Padding} = {partition.StartingOffset }");
-                        Log($"      # {nameof(partition.PartitionLength),Padding} = {partition.PartitionLength}");
+                        Log($"      # {nameof(partition.PartitionStyle                 ),Padding} = {partition.PartitionStyle                 }");
+                        Log($"      # {nameof(partition.StartingOffset                 ),Padding} = {partition.StartingOffset                 }");
+                        Log($"      # {nameof(partition.PartitionLength                ),Padding} = {partition.PartitionLength                }");
+
+                        switch (partition.PartitionStyle)
+                        {
+                            case PartitionStyle.PartitionStyleMBR:
+                                Log($"      # {nameof(partition.PartitionInformation.Mbr.PartitionType),Padding} = {partition.PartitionInformation.Mbr.PartitionType}");
+                                Log($"      # {nameof(partition.PartitionInformation.Mbr.PartitionId  ),Padding} = {partition.PartitionInformation.Mbr.PartitionId  }");
+                                break;
+                            case PartitionStyle.PartitionStyleGPT:
+                                Log($"      # {nameof(partition.PartitionInformation.Gpt.PartitionType),Padding} = {partition.PartitionInformation.Gpt.PartitionType}");
+                                Log($"      # {nameof(partition.PartitionInformation.Gpt.PartitionId  ),Padding} = {partition.PartitionInformation.Gpt.PartitionId  }");
+                                break;
+                        }
+
+                        Log($"      # {nameof(partition.IsDynamicDiskPartition         ),Padding} = {partition.IsDynamicDiskPartition         }");
+                        Log($"      # {nameof(partition.IsOtherOperatingSystemPartition),Padding} = {partition.IsOtherOperatingSystemPartition}");
                     }
                 }
                 else
@@ -173,6 +189,11 @@ namespace ConsoleOutputTest
                 }
 
                 Log($"  -> {nameof(storage.TotalSize                  ),Padding} = {storage.TotalSize                  }");
+
+                if (storage.Vendor != null)
+                {
+                    Log($"  -> {nameof(storage.Vendor                     ),Padding} = {storage.Vendor                     }");
+                }
 
                 if (storage.VendorID != null)
                 {

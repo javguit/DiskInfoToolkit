@@ -55,6 +55,8 @@ namespace DiskInfoToolkit
 
         #region Fields
 
+        const int MaxDrives = 64;
+
         static IntPtr _HiddenWindowHwnd;
         static User32.WndProc _WndProc;
 
@@ -109,16 +111,52 @@ namespace DiskInfoToolkit
             //Get storages
             foreach (var device in StorageDetector.GetStorageDevices())
             {
+                //Iterate drives for each storage controller
                 foreach (var drive in device.StorageDeviceIDs)
                 {
-                    var storage = new Storage(device.Name, drive);
-
-                    LogSimple.LogTrace($"{nameof(Storage)} {nameof(Storage.IsValid)} = {storage.IsValid}");
-
-                    if (storage.IsValid)
+                    if (CreateStorage(device.Name, drive, out var storage))
                     {
                         list.Add(storage);
                     }
+                }
+            }
+
+            //Check for drives that may exist but have not yet been detected (e.g. ReFS)
+            for (int i = 0; i < MaxDrives; ++i)
+            {
+                //Skip already detected drives
+                if (list.Any(s => s.DriveNumber == i))
+                {
+                    continue;
+                }
+
+                //Simple physical path
+                var path = $@"\\.\PhysicalDrive{i}";
+
+                var handle = SafeFileHandler.OpenHandle(path);
+
+                //Handle invalid
+                if (!SafeFileHandler.IsHandleValid(handle))
+                {
+                    continue;
+                }
+
+                //Handle valid -> close and continue
+                SafeFileHandler.CloseHandle(handle);
+
+                LogSimple.LogDebug($"Creating {nameof(Storage)} for '{path}'.");
+
+                var drive = new StorageDevice
+                {
+                    DeviceID = string.Empty,
+                    HardwareID = string.Empty,
+                    PhysicalPath = path,
+                    DriveNumber = i,
+                };
+
+                if (CreateStorage(string.Empty, drive, out var storage))
+                {
+                    list.Add(storage);
                 }
             }
 
@@ -137,6 +175,15 @@ namespace DiskInfoToolkit
         #endregion
 
         #region Private
+
+        static bool CreateStorage(string storageController, StorageDevice storageDevice, out Storage storage)
+        {
+            storage = new Storage(storageController, storageDevice);
+
+            LogSimple.LogTrace($"{nameof(Storage)} {nameof(Storage.IsValid)} = {storage.IsValid}");
+
+            return storage.IsValid;
+        }
 
         static void MessageLoop()
         {

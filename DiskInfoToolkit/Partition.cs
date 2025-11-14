@@ -78,6 +78,11 @@ namespace DiskInfoToolkit
         public bool IsDynamicDiskPartition { get; internal set; }
 
         /// <summary>
+        /// Gets a value indicating whether the partition contains an operating system other than the current one.
+        /// </summary>
+        public bool IsOtherOperatingSystemPartition => CheckIsOtherOperatingSystemPartition();
+
+        /// <summary>
         /// Volume path which is being used for <see cref="Kernel32.GetDiskFreeSpaceEx"/>.
         /// </summary>
         internal string VolumePath { get; set; }
@@ -354,6 +359,48 @@ namespace DiskInfoToolkit
                     SafeFileHandler.CloseHandle(handleABC);
                 }
             }
+        }
+
+        bool CheckIsOtherOperatingSystemPartition()
+        {
+            switch (PartitionStyle)
+            {
+                case PartitionStyle.PartitionStyleMBR:
+                    //Linux filesystems types in MBR
+                    var linuxTypes = new byte[]
+                    {
+                        0x82, //Linux swap
+                        0x83, //Linux
+                        0x8E, //Linux LVM
+                        0xA5, //FreeBSD
+                        0xA6, //OpenBSD
+                        0xA8, //Mac OS X
+                        0xAB, //Mac OS X Boot
+                        0xAF, //Mac OS X HFS+
+                    };
+
+                    if (linuxTypes.Contains(PartitionInformation.Mbr.PartitionType))
+                    {
+                        return true;
+                    }
+                    break;
+                case PartitionStyle.PartitionStyleGPT:
+                    //Linux filesystem types in GPT
+                    var linuxGuids = new Guid[]
+                    {
+                        new Guid("0FC63DAF-8483-4772-8E79-3D69D8477DE4"), //Linux filesystem
+                        new Guid("0657FD6D-A4AB-43C4-84E5-0933C84B4F4F"), //Linux swap
+                        new Guid("E6D6D379-F507-44C2-A23C-238F2A3DF928"), //Linux LVM
+                    };
+
+                    if (linuxGuids.Contains(PartitionInformation.Gpt.PartitionType))
+                    {
+                        return true;
+                    }
+                    break;
+            }
+
+            return false;
         }
 
         #endregion

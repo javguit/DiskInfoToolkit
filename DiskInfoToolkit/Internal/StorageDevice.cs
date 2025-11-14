@@ -19,7 +19,6 @@ namespace DiskInfoToolkit.Internal
         public string DeviceID { get; set; }
         public string HardwareID { get; set; }
         public string PhysicalPath { get; set; }
-        public string VolumePath { get; set; }
         public int DriveNumber { get; set; }
     }
 }
