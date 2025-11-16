@@ -75,7 +75,7 @@
   <Target Name="CompressResources" BeforeTargets="BeforeBuild"
           Inputs="$(MSBuildProjectDirectory)/Resources/pci.ids;$(MSBuildProjectDirectory)/Resources/usb.ids"
           Outputs="$(TargetDir)CompressedResources/pci.ids.gz;$(TargetDir)CompressedResources/usb.ids.gz">
-    <Message Text="Compressing resources..." Importance="High" />
+    <Message Text="Compressing resources for $(TargetFramework)..." Importance="High" />
     <MakeDir Directories="$(TargetDir)CompressedResources/" />
     <Exec Command='dotnet run --project "$(MSBuildProjectDirectory)/../Tools/GZipSingleFile/GZipSingleFile.csproj" -- "$(MSBuildProjectDirectory)/Resources/pci.ids" "$(TargetDir)CompressedResources/pci.ids.gz"' />
     <Exec Command='dotnet run --project "$(MSBuildProjectDirectory)/../Tools/GZipSingleFile/GZipSingleFile.csproj" -- "$(MSBuildProjectDirectory)/Resources/usb.ids" "$(TargetDir)CompressedResources/usb.ids.gz"' />
