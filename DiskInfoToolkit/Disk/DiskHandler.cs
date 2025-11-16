@@ -250,7 +250,7 @@ namespace DiskInfoToolkit.Disk
             storage.Smart.TemperatureCritical = (int)TemperatureConverter.KelvinToCelsius(nvmeIdentifyDevice.CriticalCompositeTemperature == 0 ? 0x015C : nvmeIdentifyDevice.CriticalCompositeTemperature);
 
             //Try to get vendor string
-            var vendor = PCIIDReader.UsbVendors.FirstOrDefault(v => v.ID == storage.VendorID);
+            var vendor = PCIIDReader.Vendors.FirstOrDefault(v => v.ID == storage.VendorID);
             if (vendor != null)
             {
                 storage.Vendor = vendor.Name;

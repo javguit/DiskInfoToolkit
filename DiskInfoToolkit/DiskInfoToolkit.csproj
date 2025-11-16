@@ -2,10 +2,10 @@
 
   <PropertyGroup>
     <TargetFrameworks>net472;net481;net8.0;net9.0;net10.0</TargetFrameworks>
-	<LangVersion>latest</LangVersion>
+    <LangVersion>latest</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-    <ApplicationManifest>Resources\app.manifest</ApplicationManifest>
+    <ApplicationManifest>Resources/app.manifest</ApplicationManifest>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Description>A toolkit for accessing disk data.</Description>
@@ -20,6 +20,9 @@
     <PackageIcon>packageicon.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Configurations>Debug;Release</Configurations>
+    <BuildInParallel>false</BuildInParallel>
+    <UseMultiToolTask>false</UseMultiToolTask>
+    <DisableBuildMultiProc>true</DisableBuildMultiProc>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net472|AnyCPU'">
@@ -61,22 +64,37 @@
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0|AnyCPU'">
     <NoWarn>1701;1702;1591;9191</NoWarn>
   </PropertyGroup>
-	
+
   <ItemGroup>
-	<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
       <_Parameter1>$(AssemblyName).Tests</_Parameter1>
-	</AssemblyAttribute>
+    </AssemblyAttribute>
   </ItemGroup>
 
+  <!-- Compress -->
+  <Target Name="CompressResources" BeforeTargets="BeforeBuild"
+          Inputs="$(MSBuildProjectDirectory)/Resources/pci.ids;$(MSBuildProjectDirectory)/Resources/usb.ids"
+          Outputs="$(TargetDir)CompressedResources/pci.ids.gz;$(TargetDir)CompressedResources/usb.ids.gz">
+    <Message Text="Compressing resources..." Importance="High" />
+    <MakeDir Directories="$(TargetDir)CompressedResources/" />
+    <Exec Command='dotnet run --project "$(MSBuildProjectDirectory)/../Tools/GZipSingleFile/GZipSingleFile.csproj" -- "$(MSBuildProjectDirectory)/Resources/pci.ids" "$(TargetDir)CompressedResources/pci.ids.gz"' />
+    <Exec Command='dotnet run --project "$(MSBuildProjectDirectory)/../Tools/GZipSingleFile/GZipSingleFile.csproj" -- "$(MSBuildProjectDirectory)/Resources/usb.ids" "$(TargetDir)CompressedResources/usb.ids.gz"' />
+  </Target>
+
+  <!-- Embed compressed resources -->
   <ItemGroup>
-    <None Remove="Resources\pci.ids" />
-    <None Remove="Resources\usb.ids" />
+    <EmbeddedResource Include="$(TargetDir)CompressedResources/pci.ids.gz">
+      <LogicalName>DiskInfoToolkit.Resources.pci.ids.gz</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(TargetDir)CompressedResources/usb.ids.gz">
+      <LogicalName>DiskInfoToolkit.Resources.usb.ids.gz</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\pci.ids" />
-    <EmbeddedResource Include="Resources\usb.ids" />
-  </ItemGroup>
+  <!-- Clean compressed resources -->
+  <Target Name="CleanCompressedResources" AfterTargets="Clean">
+    <RemoveDir Condition="Exists('$(TargetDir)CompressedResources/')" Directories="$(TargetDir)CompressedResources/" />
+  </Target>
 
   <ItemGroup>
     <PackageReference Include="BlackSharp.Core" Version="1.0.3" />
@@ -88,9 +106,6 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="Resources\packageicon.png">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>

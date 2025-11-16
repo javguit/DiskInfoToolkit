@@ -393,7 +393,7 @@ namespace DiskInfoToolkit
                         VendorID  = (ushort)venID;
                         ProductID = (ushort)devID;
 
-                        var vendor = USBIDReader.UsbVendors.FirstOrDefault(v => v.ID == venID);
+                        var vendor = USBIDReader.Vendors.FirstOrDefault(v => v.ID == venID);
                         if (vendor != null)
                         {
                             Vendor = vendor.Name;

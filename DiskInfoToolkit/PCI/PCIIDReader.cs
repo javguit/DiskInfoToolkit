@@ -9,9 +9,8 @@
  * CrystalDiskInfo
  */
 
-using DiskInfoToolkit.Logging;
+using DiskInfoToolkit.Utilities;
 using System.Globalization;
-using System.Numerics;
 using System.Text.RegularExpressions;
 
 namespace DiskInfoToolkit.PCI
@@ -29,7 +28,7 @@ namespace DiskInfoToolkit.PCI
 
         #region Fields
 
-        const string PCIIDFileName = "pci.ids";
+        const string PCIIDFileName = "pci.ids.gz";
 
         static Regex _RegexNormal = new Regex(@"^([0-9A-Fa-f]+|\d+)\s\s(.+)$");
         static Regex _RegexSub    = new Regex(@"^([0-9A-Fa-f]+|\d+)\s([0-9A-Fa-f]+|\d+)\s\s(.+)$");
@@ -38,8 +37,8 @@ namespace DiskInfoToolkit.PCI
 
         #region Properties
 
-        static List<PCIVendor> _PCIVendors = new();
-        public static IReadOnlyList<PCIVendor> UsbVendors => _PCIVendors;
+        static List<PCIVendor> _Vendors = new();
+        public static IReadOnlyList<PCIVendor> Vendors => _Vendors;
 
         #endregion
 
@@ -49,11 +48,9 @@ namespace DiskInfoToolkit.PCI
         {
             string resourceName = $"{nameof(DiskInfoToolkit)}.Resources.{PCIIDFileName}";
 
-            var assemblyWithResource = typeof(PCIIDReader).Assembly;
-
             try
             {
-                using (var stream = assemblyWithResource.GetManifestResourceStream(resourceName))
+                using (var stream = ResourceExtractor.GetResourceFileGZipStream(resourceName))
                 {
                     //Resource is good
                     if (stream != null)
@@ -100,7 +97,7 @@ namespace DiskInfoToolkit.PCI
                                 {
                                     vendor = new(lineValues.Item1, lineValues.Item3);
 
-                                    _PCIVendors.Add(vendor);
+                                    _Vendors.Add(vendor);
                                 }
                             }
                         }

@@ -9,6 +9,7 @@
  * CrystalDiskInfo
  */
 
+using DiskInfoToolkit.Utilities;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
@@ -27,7 +28,7 @@ namespace DiskInfoToolkit.Usb
 
         #region Fields
 
-        const string USBIDFileName = "usb.ids";
+        const string USBIDFileName = "usb.ids.gz";
 
         static Regex _Regex = new Regex(@"^([0-9A-Fa-f]+|\d+)\s\s(.+)$");
 
@@ -35,8 +36,8 @@ namespace DiskInfoToolkit.Usb
 
         #region Properties
 
-        static List<UsbVendor> _UsbVendors = new();
-        public static IReadOnlyList<UsbVendor> UsbVendors => _UsbVendors;
+        static List<UsbVendor> _Vendors = new();
+        public static IReadOnlyList<UsbVendor> Vendors => _Vendors;
 
         #endregion
 
@@ -46,11 +47,9 @@ namespace DiskInfoToolkit.Usb
         {
             string resourceName = $"{nameof(DiskInfoToolkit)}.Resources.{USBIDFileName}";
 
-            var assemblyWithResource = typeof(USBIDReader).Assembly;
-
             try
             {
-                using (var stream = assemblyWithResource.GetManifestResourceStream(resourceName))
+                using (var stream = ResourceExtractor.GetResourceFileGZipStream(resourceName))
                 {
                     //Resource is good
                     if (stream != null)
@@ -97,7 +96,7 @@ namespace DiskInfoToolkit.Usb
                                 {
                                     vendor = new(lineValues.Item1, lineValues.Item2);
 
-                                    _UsbVendors.Add(vendor);
+                                    _Vendors.Add(vendor);
                                 }
                             }
                         }
