@@ -64,18 +64,17 @@ namespace DiskInfoToolkit
                 LogSimple.LogTrace($"{nameof(sdi.PhysicalPath)} = '{sdi.PhysicalPath}'.");
             }
 
-            IsValid = IdentifyStorageController();
-
-            if (!IsValid)
+            if (false == (IsValid = IdentifyStorageController()))
             {
                 return;
             }
 
-            GetDiskGeometry(handle);
+            if (false == (IsValid = GetDiskGeometry(handle)))
+            {
+                return;
+            }
 
-            IsValid = GetDiskInformation(handle);
-
-            if (!IsValid)
+            if (false == (IsValid = GetDiskInformation(handle)))
             {
                 return;
             }
@@ -195,6 +194,11 @@ namespace DiskInfoToolkit
         /// Bus type of this instance.
         /// </summary>
         public StorageBusType BusType { get; private set; }
+
+        /// <summary>
+        /// Indicates if this storage medium is removable.
+        /// </summary>
+        public bool IsRemoveableMedia { get; private set; }
 
         /// <summary>
         /// Gets the total size of storage space on a drive, in bytes.
@@ -522,20 +526,29 @@ namespace DiskInfoToolkit
             return true;
         }
 
-        void GetDiskGeometry(IntPtr handle)
+        bool GetDiskGeometry(IntPtr handle)
         {
             var size = Marshal.SizeOf<DISK_GEOMETRY_EX>();
 
             var buffer = Marshal.AllocHGlobal(size);
 
-            if (Kernel32.DeviceIoControl(handle, Kernel32.IOCTL_DISK_GET_DRIVE_GEOMETRY_EX, IntPtr.Zero, 0, buffer, size, out _, IntPtr.Zero))
+            try
             {
+                if (!Kernel32.DeviceIoControl(handle, Kernel32.IOCTL_DISK_GET_DRIVE_GEOMETRY_EX, IntPtr.Zero, 0, buffer, size, out _, IntPtr.Zero))
+                {
+                    return false;
+                }
+
                 var geometry = Marshal.PtrToStructure<DISK_GEOMETRY_EX>(buffer);
 
-                TotalSize = (ulong)(geometry.DiskSize);
-            }
+                TotalSize = (ulong)geometry.DiskSize;
 
-            Marshal.FreeHGlobal(buffer);
+                return true;
+            }
+            finally
+            {
+                Marshal.FreeHGlobal(buffer);
+            }
         }
 
         bool GetDiskInformation(IntPtr handle)
@@ -556,14 +569,14 @@ namespace DiskInfoToolkit
             {
                 var descriptor = Marshal.PtrToStructure<STORAGE_DEVICE_DESCRIPTOR>(outBuffer);
 
-                Model        = Marshal.PtrToStringAnsi(outBuffer + descriptor.ProductIdOffset      );
-                SerialNumber = Marshal.PtrToStringAnsi(outBuffer + descriptor.SerialNumberOffset   );
-                Firmware     = Marshal.PtrToStringAnsi(outBuffer + descriptor.ProductRevisionOffset);
-                BusType      = descriptor.BusType;
+                Model           = Marshal.PtrToStringAnsi(outBuffer + descriptor.ProductIdOffset      );
+                SerialNumber    = Marshal.PtrToStringAnsi(outBuffer + descriptor.SerialNumberOffset   );
+                Firmware        = Marshal.PtrToStringAnsi(outBuffer + descriptor.ProductRevisionOffset);
+                BusType         = descriptor.BusType;
+                IsRemoveableMedia = descriptor.RemovableMedia != 0;
 
                 //Is removable media ?
-                if (BusType == StorageBusType.BusTypeUsb
-                 && descriptor.RemovableMedia == 1)
+                if (BusType == StorageBusType.BusTypeUsb && IsRemoveableMedia)
                 {
                     //Is possibly a SD Card reader ?
                     if (ModelContains(this, "SD Card"))

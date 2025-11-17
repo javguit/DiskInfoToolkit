@@ -40,6 +40,8 @@ namespace DiskInfoToolkit.Tests.Interop.Structures
             TestStructureSize<SmartAttributeStructure>(12);
 
             TestStructureSize<NVME_IDENTIFY_DEVICE>(4096);
+
+            TestStructureSize<STORAGE_PROPERTY_QUERY>(12);
         }
 
         [TestMethod]

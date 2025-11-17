@@ -157,6 +157,7 @@ namespace ConsoleOutputTest
                 }
 
                 Log($"  -> {nameof(storage.BusType                    ),Padding} = {storage.BusType                    }");
+                Log($"  -> {nameof(storage.IsRemoveableMedia          ),Padding} = {storage.IsRemoveableMedia          }");
                 Log($"  -> {nameof(storage.DetectedTimeUnitType       ),Padding} = {storage.DetectedTimeUnitType       }");
                 Log($"  -> {nameof(storage.DeviceID                   ),Padding} = {storage.DeviceID                   }");
                 Log($"  -> {nameof(storage.DriveNumber                ),Padding} = {storage.DriveNumber                }");
