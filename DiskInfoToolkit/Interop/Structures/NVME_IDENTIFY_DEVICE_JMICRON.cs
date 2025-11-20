@@ -3,21 +3,15 @@
 namespace DiskInfoToolkit.Interop.Structures
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    internal struct NVME_IDENTIFY_DEVICE_JMICRON
+    internal unsafe struct NVME_IDENTIFY_DEVICE_JMICRON
     {
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-        public byte[] Reserved1;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 20)]
-        public byte[] SerialNumber;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 40)]
-        public byte[] Model;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
-        public byte[] FirmwareRev;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 9)]
-        public byte[] Reserved2;
-        public byte MinorVersion;
-        public short MajorVersion;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 428)]
-        public byte[] Reserved3;
+        public fixed byte Reserved1[4];     // 0–3
+        public fixed byte SerialNumber[20]; // 4–23
+        public fixed byte Model[40];        //24–63
+        public fixed byte FirmwareRev[8];   //64–71
+        public fixed byte Reserved2[9];     //72–80
+        public byte        MinorVersion;    // 81
+        public short       MajorVersion;    //82–83
+        public fixed byte Reserved3[428];   //84–511
     }
 }

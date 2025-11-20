@@ -14,17 +14,11 @@ using System.Runtime.InteropServices;
 namespace DiskInfoToolkit.Interop.Structures
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct SMART_THRESHOLD
+    public unsafe struct SMART_THRESHOLD
     {
-        public SMART_THRESHOLD()
-        {
-            Reserved = new byte[10];
-        }
-
         public byte Id;
         public byte ThresholdValue;
 
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 10)]
-        public byte[] Reserved;
+        public fixed byte Reserved[10];
     }
 }

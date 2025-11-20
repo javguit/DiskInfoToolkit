@@ -14,20 +14,14 @@ using System.Runtime.InteropServices;
 namespace DiskInfoToolkit.Interop.Structures
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct SMART_ATTRIBUTE
+    public unsafe struct SMART_ATTRIBUTE
     {
-        public SMART_ATTRIBUTE()
-        {
-            RawValue = new byte[6];
-        }
-
-        public byte Id;
+        public byte ID;
         public ushort StatusFlags;
         public byte CurrentValue;
         public byte WorstValue;
 
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 6)]
-        public byte[] RawValue;
+        public fixed byte RawValue[6];
 
         public byte Reserved;
     }

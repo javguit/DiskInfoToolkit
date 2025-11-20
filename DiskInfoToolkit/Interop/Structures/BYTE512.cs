@@ -14,9 +14,8 @@ using System.Runtime.InteropServices;
 namespace DiskInfoToolkit.Interop.Structures
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct BYTE512
+    public unsafe struct BYTE512
     {
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 512)]
-        public byte[] B;
+        public fixed byte B[512];
     }
 }
