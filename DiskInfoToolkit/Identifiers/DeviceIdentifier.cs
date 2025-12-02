@@ -843,8 +843,6 @@ namespace DiskInfoToolkit.Identifiers
 
                 Marshal.FreeHGlobal(ptrIn);
                 Marshal.FreeHGlobal(ptrOut);
-
-                return true;
             }
 
             return true;

@@ -149,10 +149,6 @@ namespace DiskInfoToolkit.Smart
 
                 Marshal.FreeHGlobal(ptrIn);
                 Marshal.FreeHGlobal(ptrOut);
-
-                smartAttributes = new();
-
-                return true;
             }
 
             return FillSmartData(storage, buffer, out smartAttributes);
@@ -258,8 +254,6 @@ namespace DiskInfoToolkit.Smart
 
                 Marshal.FreeHGlobal(ptrIn);
                 Marshal.FreeHGlobal(ptrOut);
-
-                return true;
             }
 
             return FillSmartThreshold(storage, buffer, smartAttributes);
@@ -550,7 +544,6 @@ namespace DiskInfoToolkit.Smart
 
             smartAttributes = null;
 
-            //return GetSmartAttributeWmi();
             return false;
         }
 

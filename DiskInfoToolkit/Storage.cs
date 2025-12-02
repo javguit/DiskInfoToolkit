@@ -24,6 +24,7 @@ using DiskInfoToolkit.Interop.Structures;
 using DiskInfoToolkit.Logging;
 using DiskInfoToolkit.Usb;
 using System.Runtime.InteropServices;
+using OS = BlackSharp.Core.Platform.OperatingSystem;
 
 namespace DiskInfoToolkit
 {
@@ -33,6 +34,11 @@ namespace DiskInfoToolkit
     public sealed class Storage : IDisposable
     {
         #region Constructor
+
+        static Storage()
+        {
+            HasNVMeStorageQuery = OS.GetOSVersion(out var major, out _) && major >= 10;
+        }
 
         internal Storage(string storageController, StorageDevice sdi)
         {
@@ -113,7 +119,7 @@ namespace DiskInfoToolkit
 
         internal bool IsValid { get; private set; }
 
-        internal static bool HasNVMeStorageQuery => Environment.OSVersion.Version.Major >= 10;
+        internal static bool HasNVMeStorageQuery { get; private set; }
 
         internal static bool IsARM => RuntimeInformation.ProcessArchitecture == Architecture.Arm
                                    || RuntimeInformation.ProcessArchitecture == Architecture.Arm64;
