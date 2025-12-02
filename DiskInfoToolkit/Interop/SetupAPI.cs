@@ -19,20 +19,20 @@ namespace DiskInfoToolkit.Interop
     {
         const string DLLNAME = "setupapi.dll";
 
-        [DllImport(DLLNAME, SetLastError = true)]
+        [DllImport(DLLNAME, CharSet = CharSet.Unicode, SetLastError = true)]
         public static extern IntPtr SetupDiGetClassDevs(
             ref Guid ClassGuid,
             IntPtr Enumerator,
             IntPtr hwndParent,
             uint Flags);
 
-        [DllImport(DLLNAME, SetLastError = true)]
+        [DllImport(DLLNAME, CharSet = CharSet.Unicode, SetLastError = true)]
         public static extern bool SetupDiEnumDeviceInfo(
             IntPtr DeviceInfoSet,
             uint MemberIndex,
             ref SP_DEVINFO_DATA DeviceInfoData);
 
-        [DllImport(DLLNAME, CharSet = CharSet.Auto, SetLastError = true)]
+        [DllImport(DLLNAME, CharSet = CharSet.Unicode, SetLastError = true)]
         public static extern bool SetupDiGetDeviceRegistryProperty(
             IntPtr DeviceInfoSet,
             ref SP_DEVINFO_DATA DeviceInfoData,
@@ -42,7 +42,7 @@ namespace DiskInfoToolkit.Interop
             uint PropertyBufferSize,
             out uint RequiredSize);
 
-        [DllImport(DLLNAME, CharSet = CharSet.Auto, SetLastError = true)]
+        [DllImport(DLLNAME, CharSet = CharSet.Unicode, SetLastError = true)]
         public static extern bool SetupDiGetDeviceRegistryProperty(
             IntPtr deviceInfoSet,
             ref SP_DEVINFO_DATA deviceInfoData,
@@ -53,7 +53,7 @@ namespace DiskInfoToolkit.Interop
             out uint requiredSize
             );
 
-        [DllImport(DLLNAME, SetLastError = true)]
+        [DllImport(DLLNAME, CharSet = CharSet.Unicode, SetLastError = true)]
         public static extern bool SetupDiEnumDeviceInterfaces(
             IntPtr DeviceInfoSet,
             IntPtr DeviceInfoData,
@@ -61,8 +61,8 @@ namespace DiskInfoToolkit.Interop
             uint MemberIndex,
             ref SP_DEVICE_INTERFACE_DATA DeviceInterfaceData);
 
-        [DllImport(DLLNAME, SetLastError = true)]
-        public static extern bool SetupDiGetDeviceInterfaceDetailA(
+        [DllImport(DLLNAME, CharSet = CharSet.Unicode, SetLastError = true)]
+        public static extern bool SetupDiGetDeviceInterfaceDetail(
             IntPtr DeviceInfoSet,
             ref SP_DEVICE_INTERFACE_DATA DeviceInterfaceData,
             IntPtr DeviceInterfaceDetailData,
@@ -70,8 +70,8 @@ namespace DiskInfoToolkit.Interop
             out int RequiredSize,
             IntPtr DeviceInfoData);
 
-        [DllImport(DLLNAME, SetLastError = true)]
-        public static extern bool SetupDiGetDeviceInterfaceDetailA(
+        [DllImport(DLLNAME, CharSet = CharSet.Unicode, SetLastError = true)]
+        public static extern bool SetupDiGetDeviceInterfaceDetail(
             IntPtr DeviceInfoSet,
             ref SP_DEVICE_INTERFACE_DATA DeviceInterfaceData,
             IntPtr DeviceInterfaceDetailData,
@@ -79,8 +79,8 @@ namespace DiskInfoToolkit.Interop
             out int RequiredSize,
             ref SP_DEVINFO_DATA DeviceInfoData);
 
-        [DllImport(DLLNAME, SetLastError = true)]
-        public static extern bool SetupDiGetDeviceInterfaceDetailA(
+        [DllImport(DLLNAME, CharSet = CharSet.Unicode, SetLastError = true)]
+        public static extern bool SetupDiGetDeviceInterfaceDetail(
             IntPtr DeviceInfoSet,
             ref SP_DEVICE_INTERFACE_DATA DeviceInterfaceData,
             ref SP_DEVICE_INTERFACE_DETAIL_DATA DeviceInterfaceDetailData,
@@ -88,7 +88,7 @@ namespace DiskInfoToolkit.Interop
             out int RequiredSize,
             ref SP_DEVINFO_DATA DeviceInfoData);
 
-        [DllImport(DLLNAME, CharSet = CharSet.Auto, SetLastError = true)]
+        [DllImport(DLLNAME, CharSet = CharSet.Unicode, SetLastError = true)]
         public static extern bool SetupDiGetDeviceInstanceId(
             IntPtr DeviceInfoSet,
             ref SP_DEVINFO_DATA DeviceInfoData,
@@ -96,7 +96,7 @@ namespace DiskInfoToolkit.Interop
             int DeviceInstanceIdSize,
             out int RequiredSize);
 
-        [DllImport(DLLNAME, SetLastError = true)]
+        [DllImport(DLLNAME, CharSet = CharSet.Unicode, SetLastError = true)]
         public static extern bool SetupDiDestroyDeviceInfoList(IntPtr DeviceInfoSet);
     }
 }

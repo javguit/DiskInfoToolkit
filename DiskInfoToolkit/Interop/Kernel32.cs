@@ -70,14 +70,14 @@ namespace DiskInfoToolkit.Interop
         public static extern bool ReadFile(IntPtr hFile, byte[] buffer, uint numberOfBytesToRead,
             out uint numberOfBytesRead, IntPtr lpOverlapped);
 
-        [DllImport(DLL_NAME, CharSet = CharSet.Unicode)]
+        [DllImport(DLL_NAME, CharSet = CharSet.Unicode, SetLastError = true)]
         public static extern IntPtr GetModuleHandle(string lpModuleName);
 
-        [DllImport(DLL_NAME, SetLastError = true)]
+        [DllImport(DLL_NAME, CharSet = CharSet.Unicode, SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         public static extern IntPtr LoadLibrary(string lpFileName);
 
-        [DllImport(DLL_NAME, SetLastError = true, CharSet = CharSet.Auto)]
+        [DllImport(DLL_NAME, CharSet = CharSet.Unicode, SetLastError = true)]
         public static extern bool GetDiskFreeSpaceEx(
             string lpDirectoryName,
             out ulong lpFreeBytesAvailable,

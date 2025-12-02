@@ -218,7 +218,7 @@ namespace DiskInfoToolkit
                     ++index;
 
                     //Get required buffer size
-                    SetupAPI.SetupDiGetDeviceInterfaceDetailA(devInfo, ref interfaceData, IntPtr.Zero, 0, out var requiredSize, IntPtr.Zero);
+                    SetupAPI.SetupDiGetDeviceInterfaceDetail(devInfo, ref interfaceData, IntPtr.Zero, 0, out var requiredSize, IntPtr.Zero);
 
                     var detailDataBuffer = Marshal.AllocHGlobal(requiredSize);
 
@@ -227,12 +227,12 @@ namespace DiskInfoToolkit
                         Marshal.WriteInt32(detailDataBuffer, IntPtr.Size == 8 ? 8 : 6); //Do not change that
 
                         //Get full device path and devInfo
-                        if (SetupAPI.SetupDiGetDeviceInterfaceDetailA(devInfo, ref interfaceData, detailDataBuffer, requiredSize, out _, IntPtr.Zero))
+                        if (SetupAPI.SetupDiGetDeviceInterfaceDetail(devInfo, ref interfaceData, detailDataBuffer, requiredSize, out _, IntPtr.Zero))
                         {
                             var offset = Marshal.OffsetOf<SP_DEVICE_INTERFACE_DETAIL_DATA>(nameof(SP_DEVICE_INTERFACE_DETAIL_DATA.DevicePath)).ToInt64();
 
                             var pDevicePath = new IntPtr(detailDataBuffer.ToInt64() + offset);
-                            string volumePath = Marshal.PtrToStringAnsi(pDevicePath);
+                            string volumePath = Marshal.PtrToStringUni(pDevicePath);
 
                             var handle = SafeFileHandler.OpenHandle(volumePath);
                             if (!SafeFileHandler.IsHandleValid(handle))

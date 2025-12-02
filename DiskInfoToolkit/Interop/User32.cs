@@ -36,7 +36,7 @@ namespace DiskInfoToolkit.Interop
         [DllImport(DLLNAME, CharSet = CharSet.Unicode, SetLastError = true)]
         public static extern ushort RegisterClassEx(ref WNDCLASSEX lpWndClass);
 
-        [DllImport(DLLNAME, SetLastError = true)]
+        [DllImport(DLLNAME, CharSet = CharSet.Unicode, SetLastError = true)]
         public static extern IntPtr CreateWindowEx(
            int dwExStyle,
            [MarshalAs(UnmanagedType.LPStr)] string lpClassName,
@@ -52,19 +52,18 @@ namespace DiskInfoToolkit.Interop
            IntPtr lpParam);
 
         [DllImport(DLLNAME, CharSet = CharSet.Unicode, SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool DestroyWindow(IntPtr hwnd);
 
-        [DllImport(DLLNAME)]
+        [DllImport(DLLNAME, CharSet = CharSet.Unicode, SetLastError = true)]
         public static extern IntPtr DefWindowProc(IntPtr hWnd, uint msg, UIntPtr wParam, IntPtr lParam);
 
-        [DllImport(DLLNAME)]
+        [DllImport(DLLNAME, CharSet = CharSet.Unicode, SetLastError = true)]
         public static extern int GetMessage(out MSG lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax);
 
         [DllImport(DLLNAME)]
-        public static extern bool TranslateMessage([In] ref MSG lpMsg);
+        public static extern bool TranslateMessage(ref MSG lpMsg);
 
-        [DllImport(DLLNAME)]
-        public static extern IntPtr DispatchMessage([In] ref MSG lpmsg);
+        [DllImport(DLLNAME, CharSet = CharSet.Unicode, SetLastError = true)]
+        public static extern IntPtr DispatchMessage(ref MSG lpmsg);
     }
 }
